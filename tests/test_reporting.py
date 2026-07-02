@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
+import json
 
 from lossaware.reporting import build_final_summary
 
@@ -61,13 +62,23 @@ def test_build_final_summary_writes_report(tmp_path):
     ).to_csv(results / "privacy_utility_tradeoff.csv", index=False)
     pd.DataFrame(
         [
-            {
-                "generator": "gaussian_copula",
-                "selection_loss": 0.1,
-                "composite_loss": 0.1,
-            }
-        ]
+                {
+                    "generator": "gaussian_copula",
+                    "selection_loss": 0.1,
+                    "composite_loss": 0.1,
+                    "privacy_feasible": True,
+                }
+            ]
     ).to_csv(results / "loss_aware_ranking.csv", index=False)
+    (results / "loss_aware_selection.json").write_text(
+        json.dumps(
+            {
+                "selected_generator": "gaussian_copula",
+                "selection_status": "privacy_feasible",
+            }
+        ),
+        encoding="utf-8",
+    )
 
     report = build_final_summary(tmp_path / "results", reports, dataset)
 

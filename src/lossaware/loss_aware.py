@@ -17,6 +17,7 @@ class SelectionResult:
     """Selected synthetic dataset and ranking artifacts."""
 
     selected_generator: str
+    selection_status: str
     selected_path: Path
     ranking_path: Path
     metadata_path: Path
@@ -115,8 +116,15 @@ def select_loss_aware_candidate(
         privacy_config=selection_config["privacy"],
     )
     feasible = ranked[ranked["privacy_feasible"]]
+    selection_status = "privacy_feasible"
     if feasible.empty:
-        raise ValueError("No synthetic candidate satisfies the privacy constraints.")
+        if not selection_config.get("allow_best_effort_if_no_feasible", True):
+            raise ValueError("No synthetic candidate satisfies the privacy constraints.")
+        feasible = ranked.sort_values(
+            by=["composite_loss", "membership_advantage"],
+            ascending=[True, True],
+        )
+        selection_status = "best_effort_no_privacy_feasible_candidate"
 
     selected = feasible.iloc[0]
     generator = str(selected["generator"])
@@ -133,6 +141,7 @@ def select_loss_aware_candidate(
         json.dumps(
             {
                 "selected_generator": generator,
+                "selection_status": selection_status,
                 "selected_path": str(selected_path),
                 "weights": selection_config["weights"],
                 "privacy_constraints": selection_config["privacy"],
@@ -145,6 +154,7 @@ def select_loss_aware_candidate(
 
     return SelectionResult(
         selected_generator=generator,
+        selection_status=selection_status,
         selected_path=selected_path,
         ranking_path=ranking_path,
         metadata_path=metadata_path,

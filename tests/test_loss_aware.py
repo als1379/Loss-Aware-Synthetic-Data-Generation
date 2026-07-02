@@ -50,3 +50,22 @@ def test_rank_candidates_normalizes_weights():
     )
 
     assert "composite_loss" in ranked.columns
+
+
+def test_rank_candidates_keeps_infeasible_candidates_ranked():
+    ranked = rank_candidates(
+        tradeoff=make_tradeoff(),
+        weights={
+            "distribution_mismatch": 0.4,
+            "correlation_distortion": 0.3,
+            "downstream_degradation": 0.3,
+        },
+        privacy_config={
+            "min_median_dcr": 10.0,
+            "max_exact_match_rate": 0.0,
+            "max_membership_advantage": 0.0,
+        },
+    )
+
+    assert not ranked["privacy_feasible"].any()
+    assert ranked["selection_loss"].isin([float("inf")]).all()

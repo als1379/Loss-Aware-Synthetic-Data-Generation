@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -21,10 +22,14 @@ def build_final_summary(results_dir: str | Path, reports_dir: str | Path, datase
     utility = pd.read_csv(result_root / "utility_summary.csv")
     privacy = pd.read_csv(result_root / "privacy_metrics.csv")
     ranking = pd.read_csv(result_root / "loss_aware_ranking.csv")
-    selection = ranking[ranking["selection_loss"] != float("inf")].iloc[0]
+    selection_metadata = json.loads(
+        (result_root / "loss_aware_selection.json").read_text(encoding="utf-8")
+    )
+    selected_generator = selection_metadata["selected_generator"]
+    selection_status = selection_metadata.get("selection_status", "privacy_feasible")
+    selection = ranking[ranking["generator"] == selected_generator].iloc[0]
     tradeoff = pd.read_csv(result_root / "privacy_utility_tradeoff.csv")
 
-    selected_generator = selection["generator"]
     selected_tradeoff = tradeoff[tradeoff["generator"] == selected_generator].iloc[0]
     best_baseline = baselines.sort_values("f1", ascending=False).iloc[0]
 
@@ -84,11 +89,12 @@ def build_final_summary(results_dir: str | Path, reports_dir: str | Path, datase
                 "",
                 "## Loss-Aware Strategy",
                 "",
-                "The loss-aware selector normalized each utility metric, applied the configured composite-loss weights, and selected the lowest-loss candidate satisfying privacy constraints.",
+                "The loss-aware selector normalized each utility metric, applied the configured composite-loss weights, and selected the lowest-loss candidate. If no candidate satisfies the privacy constraints, the report marks the selection as best-effort rather than hiding the failure.",
                 "",
                 f"- Selected candidate: `{selected_generator}`",
+                f"- Selection status: `{selection_status}`",
                 f"- Composite loss: {_format_float(selection['composite_loss'])}",
-                "- TVAE was rejected by the privacy constraints in the current local run.",
+                f"- Privacy feasible: `{bool(selection['privacy_feasible'])}`",
                 "",
                 "## Ethics Connection",
                 "",

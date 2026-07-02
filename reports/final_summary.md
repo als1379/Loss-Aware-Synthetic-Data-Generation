@@ -10,35 +10,35 @@
 The reference task is Train-Real-Test-Real classification.
 
 - Best baseline model: `logistic_regression`
-- Accuracy: 0.8195
-- F1: 0.7791
-- ROC AUC: 0.8976
+- Accuracy: 0.8142
+- F1: 0.7749
+- ROC AUC: 0.8941
 
 ## Synthetic Utility
 
 Utility was measured with distribution mismatch, correlation distortion, and Train-Synthetic-Test-Real performance gaps.
 
 - Selected generator: `gaussian_copula`
-- Mean numeric KS: 0.1655
-- Mean categorical TVD: 0.0168
-- Correlation distance: 11.0008
-- Mean TSTR F1 gap: 0.2355
-- Mean TSTR AUC gap: 0.1129
+- Mean numeric KS: 0.1487
+- Mean categorical TVD: 0.0118
+- Correlation distance: 8.0889
+- Mean TSTR F1 gap: 0.2160
+- Mean TSTR AUC gap: 0.1224
 
 ## Privacy Indicators
 
 Privacy was measured with distance-to-closest-record and a simple membership-risk proxy.
 
-- DCR median: 2.1472
+- DCR median: 2.0906
 - Exact match rate: 0.0000
-- Membership advantage: 0.1534
+- Membership advantage: 0.0000
 
 ## Loss-Aware Strategy
 
 The loss-aware selector normalized each utility metric, applied the configured composite-loss weights, and selected the lowest-loss candidate satisfying privacy constraints.
 
 - Selected candidate: `gaussian_copula`
-- Composite loss: 0.0113
+- Composite loss: 0.4024
 - TVAE was rejected by the privacy constraints in the current local run.
 
 ## Ethics Connection

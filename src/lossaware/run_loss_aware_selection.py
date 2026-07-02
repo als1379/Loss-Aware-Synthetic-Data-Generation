@@ -31,6 +31,7 @@ def main() -> None:
 
     result = run_loss_aware_selection(args.config)
     print(f"selected_generator={result.selected_generator}")
+    print(f"selection_status={result.selection_status}")
     print(f"selected_path={result.selected_path}")
     print(f"ranking_path={result.ranking_path}")
 

@@ -69,6 +69,7 @@
       "min_median_dcr": 1.5,
       "max_exact_match_rate": 0.0,
       "max_membership_advantage": 0.2
-    }
+    },
+    "allow_best_effort_if_no_feasible": true
   }
 }
