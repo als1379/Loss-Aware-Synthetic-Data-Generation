@@ -43,6 +43,7 @@ def run_pipeline(
     reuse_existing: bool = False,
 ) -> Path:
     """Run the full workflow and return the final report path."""
+    config_path = Path(config_path).resolve()
     config = load_config(config_path)
 
     workflow = [

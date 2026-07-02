@@ -150,9 +150,9 @@ def evaluate_tstr(
     X_train = synthetic_train.drop(columns=[real_split.target_column])
     y_train = synthetic_train[real_split.target_column]
     label_encoder = LabelEncoder()
-    y_real_train = label_encoder.fit_transform(real_split.y_train)
-    y_synthetic = label_encoder.transform(y_train)
-    y_test = label_encoder.transform(real_split.y_test)
+    y_real_train = label_encoder.fit_transform(real_split.y_train.astype(str))
+    y_synthetic = label_encoder.transform(y_train.astype(str))
+    y_test = label_encoder.transform(real_split.y_test.astype(str))
 
     rows: list[dict[str, object]] = []
     for model_name in model_names:

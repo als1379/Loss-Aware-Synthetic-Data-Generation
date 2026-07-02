@@ -22,7 +22,8 @@ def test_prepare_training_frame_samples_stratified():
     )
 
     assert len(prepared) == 10
-    assert set(prepared["target"]) == {0, 1}
+    assert set(prepared["target"]) == {"0", "1"}
+    assert prepared["cat"].dtype == "object"
 
 
 def test_build_metadata_marks_schema_types():

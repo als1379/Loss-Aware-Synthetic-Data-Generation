@@ -93,7 +93,7 @@ def prepare_training_frame(
 
     for column in categorical_columns + [target_column]:
         if column in frame:
-            frame[column] = frame[column].astype("object")
+            frame[column] = frame[column].where(frame[column].notna(), "missing").astype(str)
 
     for column in numerical_columns:
         if column in frame:
